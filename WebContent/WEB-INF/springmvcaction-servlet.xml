@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+	<!-- 3种不同的url处理器映射 -->
+	<!-- 首先是Bean名url处理器映射,这是默认的处理器映射，也是推荐使用的处理器映射 -->
+	<bean
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+		<property name="order" value="3"></property>
+	</bean>
+	<!-- 然后是简单url处理器映射 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order" value="2"></property>
+		<property name="mappings">
+			<map>
+				<entry key="/abc.action" value-ref="homeAction"></entry>
+				<entry key="/xiaozhang.action" value-ref="homeAction"></entry>
+			</map>
+		</property>
+	</bean>
+	<!-- 第三种是控制器类名处理器映射 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping">
+		<property name="order" value="1"></property>
+	</bean>
+
+	<!-- 接下来是几种不同的控制器 -->
+	<!-- 第一种控制器：AbstractController -->
+	<bean id="homeAction" name="/home.action" class="com.kdyzm.controller.HomeController"></bean>
+	<!-- 第二种控制器是命令控制器 -->
+	<bean id="commandController" name="/commandController.action"
+		class="com.kdyzm.controller.MyCommandController"></bean>
+	<!-- 第二种控制器是表单控制器 -->
+	<bean id="formController" name="/formController.action"
+		class="com.kdyzm.controller.MyFormController">
+		<property name="formView" value="formView"></property>
+		<property name="successView" value="index"></property>
+	</bean>
+	<!-- 第三种控制器是向导表单控制器 -->
+	<bean id="wizardFormController" name="/wizard.action"
+		class="com.kdyzm.controller.MyWizardController">
+		<property name="pages">
+			<list>
+				<value>wizard/1</value>
+				<value>wizard/2</value>
+				<value>wizard/3</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 内部资源视图解析器 -->
+	<bean id="internalResourceViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsps/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+</beans>
